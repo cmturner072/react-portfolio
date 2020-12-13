@@ -7,6 +7,7 @@ import Home from "./pages/home";
 import About from "./pages/about";
 import Contact from "./pages/contact";
 import Blog from "./pages/blog";
+import PortfolioManager from "./pages/portfolio-manager";
 import PortfolioDetail from "./portfolio/portfolio-detail";
 import Auth from "./pages/auth";
 import NoMatch from "./pages/no-match";
@@ -76,8 +77,8 @@ export default class App extends Component {
 
   authorizedPages() {
     return [
-      <Route path="/blog" component={Blog} />
-    ]
+      <Route path="/portfolio-manager" component={PortfolioManager} />
+    ];
   }
 
   render() {
@@ -92,7 +93,6 @@ export default class App extends Component {
 
           />
 
-          <h2>{this.state.loggedInStatus}</h2>
 
           <Switch>
             <Route exact path="/" component={Home} />
@@ -110,6 +110,7 @@ export default class App extends Component {
             />
             <Route path="/about-me" component={About} />
             <Route path="/contact" component={Contact} />
+            <Route path="/blog" component={Blog} />
             {this.state.loggedInStatus ===  "LOGGED_IN" ? this.authorizedPages() : null}
             <Route exact path="/portfolio/:slug" component={PortfolioDetail} />
             <Route component={NoMatch}/>
