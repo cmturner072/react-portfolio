@@ -18,7 +18,10 @@ export default class PortfolioForm extends Component {
             url: "",
             thumb_image: "",
             banner_image: "",
-            logo: ""
+            logo: "", 
+            editMode: false,
+            apiUrl: "https://christineturner.devcamp.space/portfolio/portfolio_items",
+            apiAction: "post"
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -57,8 +60,11 @@ export default class PortfolioForm extends Component {
                     description: description || "",
                     category: category || "",
                     position: position || "",
-                    url: url || ""
-                })
+                    url: url || "",
+                    editMode: true,
+                    apiUrl: `https://christineturner.devcamp.space/portfolio/portfolio_items/${id}`,
+                    apiAction: "patch"
+                });
             }
         }
 
@@ -85,7 +91,7 @@ export default class PortfolioForm extends Component {
                 iconFiletypes: [".jpg", ".png"],
                 showFiletypeIcon: true,
                 postUrl: "https://httpbin.org/post"
-            }
+            };
         }
 
         djsConfig() {
@@ -108,11 +114,11 @@ export default class PortfolioForm extends Component {
                 formData.append("portfolio_item[thumb_image]", this.state.thumb_image);
             }
 
-            if (this.state.thumb_image) {
+            if (this.state.banner_image) {
                 formData.append("portfolio_item[banner_image]", this.state.banner_image);
             }
             
-            if (this.state.thumb_image) {
+            if (this.state.logo) {
                 formData.append("portfolio_item[logo]", this.state.logo);
             }
 
@@ -123,35 +129,48 @@ export default class PortfolioForm extends Component {
         handleChange(event) {
           this.setState({
             [event.target.name]: event.target.value  
-          }) 
+          }); 
         }
 
         handleSubmit(event) {
-            axios.post("https://christineturner.devcamp.space/portfolio/portfolio_items", 
-            this.buildForm(), { withCredentials: true }
-            ).then(response => {
-                this.props.handleSuccessfulFormSubmission(response.data.portfolio_item);
-
-                this.setState({
-                    name: "", 
-                    description: "",
-                    category: "",
-                    position: "",
-                    url: "",
-                    thumb_image: "",
-                    banner_image: "",
-                    logo: ""
-                });
-
-                [this.thumbRef, this.bannerRef, this.logoRef].forEach(ref => {
-                    ref.current.dropzone.removeAllFiles();
-                })
-
-            }).catch(error => {
-                console.log("portfolio form handleSubmit error", error);
+            axios({
+              method: this.state.apiAction,
+              url: this.state.apiUrl,
+              data: this.buildForm(),
+              withCredentials: true
             })
+              .then(response => {
+                if (this.state.editMode) {
+                  this.props.handleEditFormSubmission();
+                } else {
+                  this.props.handleNewFormSubmission(response.data.portfolio_item);
+                }
+        
+                this.setState({
+                  name: "",
+                  description: "",
+                  category: "eCommerce",
+                  position: "",
+                  url: "",
+                  thumb_image: "",
+                  banner_image: "",
+                  logo: "",
+                  editMode: false,
+                  apiUrl: "https://christineturner.devcamp.space/portfolio/portfolio_items",
+                  apiAction: "post"
+                });
+        
+                [this.thumbRef, this.bannerRef, this.logoRef].forEach(ref => {
+                  ref.current.dropzone.removeAllFiles();
+                });
+              })
+              .catch(error => {
+                console.log("portfolio form handleSubmit error", error);
+              });
+        
             event.preventDefault();
         }
+
     render() {
         return (
             <form onSubmit={this.handleSubmit} className="portfolio-form-wrapper">
