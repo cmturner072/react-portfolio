@@ -13,7 +13,17 @@ constructor() {
     }
 
     this.getBlogItems = this.getBlogItems.bind(this);
-}
+    this.activateInfiniteScroll();
+    }
+
+    activateInfiniteScroll() {
+        window.onscroll = () => {
+            if (window.innerHeight + document.documentElement.scrollTop === 
+                document.documentElement.offsetHeight) {
+                console.log("get more posts");
+            }
+        };
+    }
 
     getBlogItems() {
         axios.get("https://christineturner.devcamp.space/portfolio/portfolio_blogs", { 
@@ -36,11 +46,15 @@ constructor() {
             return <BlogItem key={blogItem.id} blogItem={blogItem} />;
         });
 
+       
+
         return (
-            <div>
-                {blogRecords}
+            <div className="blog-container">
+                <div className="content-container">
+                    {blogRecords}
+                </div>
             </div>
-        );
+        )
     }
 }
 

@@ -34,7 +34,7 @@ export default class BlogDetail extends Component {
             featured_image_url,
             blog_status
         } = this.state.blogItem;
-        console.log("currentId", this.state.currentId);
+        
         return (
             <div className="blog-container">
                 <div className="content-container">
