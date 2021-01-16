@@ -105,7 +105,7 @@ constructor() {
 
             <div className="new-blog-link">
                 <a onClick={this.handleNewBlogClick}>
-                    Open Modal!
+                   <FontAwesomeIcon icon="plus" />
                 </a>
             </div>
                 <div className="content-container">
